@@ -14,6 +14,11 @@ import java.util.Scanner;
  */
 public class Validator {
 
+    // Konstanten für den absoluten Nullpunkt zur Validierung
+    private static final double ABSOLUTER_NULLPUNKT_C = -273.15;
+    private static final double ABSOLUTER_NULLPUNKT_F = -459.67;
+    private static final double ABSOLUTER_NULLPUNKT_K = 0.0;
+
     private final Scanner scanner;
 
     /**
@@ -44,7 +49,7 @@ public class Validator {
             }
 
             try {
-                return Double.parseDouble(eingabe.contains(",") ? eingabe.replace(',', '.') : eingabe);
+                return Double.valueOf(eingabe.contains(",") ? eingabe.replace(',', '.') : eingabe);
             } catch (NumberFormatException e) {
                 System.out.println(
                         "Ungültige Eingabe. Bitte geben Sie eine Zahl ein (z.B. 25 oder -10,5)."
@@ -81,5 +86,26 @@ public class Validator {
                 );
             }
         }
+    }
+
+    /**
+     * Prüft, ob ein gegebener Temperaturwert für eine gegebene Einheit
+     * physikalisch gültig ist (d.h. über dem absoluten Nullpunkt liegt).
+     *
+     * @param temperatur Der zu prüfende Temperaturwert.
+     * @param einheit Die Einheit des Temperaturwerts ("C", "F", oder "K").
+     * @return true, wenn der Wert gültig ist, sonst false.
+     */
+    public boolean istWertGueltig(double temperatur, String einheit) {
+        return switch (einheit) {
+            case "C" ->
+                temperatur > ABSOLUTER_NULLPUNKT_C;
+            case "F" ->
+                temperatur >= ABSOLUTER_NULLPUNKT_F;
+            case "K" ->
+                temperatur >= ABSOLUTER_NULLPUNKT_K;
+            default ->
+                false; // Sollte nie erreicht werden dank Vorab-Validierung
+        };
     }
 }
